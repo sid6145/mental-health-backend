@@ -38,7 +38,7 @@ app.use("/api/post", postRoute);
 app.use("/api/mail", mailRoute);
 
 app.get("/", (req, res) => {
-    res.send("hello")
+    res.send("hello world")
 })
 
 

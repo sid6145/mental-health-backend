@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     activities:[{
         type: mongoose.Schema.Types.ObjectId, ref: 'Activity'
     }],
-  
+
 
 });
 

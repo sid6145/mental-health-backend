@@ -29,8 +29,8 @@ const DoctorSchema = new mongoose.Schema({
     },
     docImage:{
         type: String
-    }
-  
+    },
+
 });
 
 

@@ -1,28 +1,27 @@
 const router = require('express').Router()
 const Post = require('../models/Post')
-const multer = require('multer')
+const upload = require('../utils/multer')
+const cloudinary = require('../utils/cloudinary')
 
 
-const storage = multer.diskStorage({
-    destination: (req, file, callback) => {
-        callback(null, "../client/public/uploads/");
-    },
-    filename: (req, file, callback) => {
-        callback(null, file.originalname);
-    }
-})
-
-const upload = multer({storage: storage});
 
 router.post("/", upload.single("postImage"), async (req, res) => {
+    
+    try {
+        const result = await cloudinary.uploader.upload(req.file.path);
+    
     const post = new Post({
         title: req.body.title,
         description: req.body.description,
-        postImage: req.file.originalname
+        postImage: result.secure_url,
+        cloudinary_id: result.public_id
     });
 
     const savedPost = await post.save()
     res.json(savedPost)
+    }catch(err){
+        console.log(err)
+    }
 })
 
 // router.post("/comment/:_id", async (req, res) => {

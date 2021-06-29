@@ -20,8 +20,13 @@ const transporter = nodemailer.createTransport({
         const mailData = {
             from: "mentalchroma@gmail.com",
             to: req.body.to,
-            subject: `appointment from Dr: ${doctor.name}`,
-            html: `Please join :${req.body.html}`
+            subject: `Appointment, Mental Chroma`,
+            html: `
+            <div style={background-color:#green;}>
+            <h3>Appointment from doctor</h3><span> ${doctor.name}</span>
+            <b>video call link:</b>${req.body.html}
+            </div>
+            `
         };
 
         transporter.sendMail(mailData, (error, info) => {

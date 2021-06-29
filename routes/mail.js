@@ -23,7 +23,7 @@ const transporter = nodemailer.createTransport({
             subject: `Appointment, Mental Chroma`,
             html: `
             <div style={background-color:#green;}>
-            <h3>Appointment from doctor</h3><span> ${doctor.name}</span>
+            <h3>Appointment from doctor: ${doctor.name}</h3> 
             <b>video call link:</b>${req.body.html}
             </div>
             `

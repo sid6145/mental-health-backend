@@ -12,6 +12,9 @@ const appointmentSchema = mongoose.Schema({
     },
     time:{
         type: String
+    },
+    payment:{
+        type: String
     }
 })
 

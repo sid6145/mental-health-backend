@@ -12,7 +12,8 @@ router.post("/", verify, async (req, res) => {
         name: req.body.name,
         email: req.body.email,
         date: req.body.date,
-        time: req.body.time
+        time: req.body.time,
+        payment: req.body.payment
     })
    
         const savedAppointment = await appointment.save()

@@ -10,9 +10,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    image:{
-        type: String
-    },
     password: {
         type: String,
         required: true,
@@ -21,6 +18,13 @@ const userSchema = new mongoose.Schema({
     activities:[{
         type: mongoose.Schema.Types.ObjectId, ref: 'Activity'
     }],
+    userImage:{
+        type: String
+    },
+    cloudinary_id:{
+        type: String
+    }
+
 
 
 });

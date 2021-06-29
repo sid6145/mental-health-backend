@@ -30,7 +30,9 @@ const DoctorSchema = new mongoose.Schema({
     docImage:{
         type: String
     },
-
+    cloudinary_id:{
+        type: String
+    }
 });
 
 

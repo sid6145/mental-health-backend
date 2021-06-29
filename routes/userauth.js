@@ -4,19 +4,21 @@ const {userRegisterValidation, userLoginValidation} = require('../validation')
 const verify = require('./verifyToken')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const multer = require('multer')
+const upload = require("../utils/multer");
+const cloudinary = require("../utils/cloudinary");
 
 
-const storage = multer.diskStorage({
-    destination: (req, file, callback) => {
-        callback(null, "../client/public/uploads/");
-    },
-    filename: (req, file, callback) => {
-        callback(null, file.originalname);
-    }
-})
 
-const upload = multer({storage: storage});
+// const storage = multer.diskStorage({
+//     destination: (req, file, callback) => {
+//         callback(null, "../client/public/uploads/");
+//     },
+//     filename: (req, file, callback) => {
+//         callback(null, file.originalname);
+//     }
+// })
+
+// const upload = multer({storage: storage});
 
 
 router.get("/profile",verify ,async (req, res) => {
@@ -25,20 +27,33 @@ router.get("/profile",verify ,async (req, res) => {
 
 })
 
-router.put("/profile", [upload.single("image"), verify], async(req, res) => {
-    const _id = req.user._id
-    try{
-   const userProfile = await User.findOneAndUpdate({_id:_id},{image: req.file.originalname} )
-    res.send(userProfile)
+router.put(
+    "/profile",
+    [verify, upload.single("userImage")],
+    async (req, res) => {
+      const _id = req.user._id;
+      try {
+        let user = await User.findById({ _id: _id });
+  
+        await cloudinary.uploader.destroy(user.cloudinary_id);
+        const result = await cloudinary.uploader.upload(req.file.path);
+  
+        const profile = await User.findOneAndUpdate(
+          { _id: _id },
+          {
+            userImage: result.secure_url || user.docImage,
+            cloudinary_id: result.public_id || user.cloudinary_id,
+          }
+        );
+        res.send(profile);
+      } catch (err) {
+        console.log(err);
+      }
     }
-    catch(err){
-        console.log(err)
-    }
-})
+  );
 
 
-
-router.post("/register", async (req, res) => {
+router.post("/register", upload.single("userImage"), async (req, res) => {
 
     //validation
     const {error} = userRegisterValidation(req.body)
@@ -54,11 +69,15 @@ router.post("/register", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
+    const result = await cloudinary.uploader.upload(req.file.path);
+
     //create new user
     const user = new User({
         name: req.body.name,
         email: req.body.email,
-        password: hashedPassword
+        password: hashedPassword,
+        userImage: result.secure_url,
+        cloudinary_id: result.public_id,
     });
     try{
         const savedUser = await user.save();

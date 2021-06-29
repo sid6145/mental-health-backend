@@ -38,9 +38,8 @@ app.use("/api/post", postRoute);
 app.use("/api/mail", mailRoute);
 
 app.get("/", (req, res) => {
-    res.send("hello world")
+  res.send("hello")
 })
-
 
 app.listen(port, function () {
   console.log(`server started on port ${port}`);
